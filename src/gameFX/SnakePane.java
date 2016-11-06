@@ -14,6 +14,7 @@ public class SnakePane extends StackPane {
 	public SnakePane(GameManager gameManager) {
 		this.gameManger = gameManager;
 		this.gameBounds = gameManager.getLayoutBounds();
+		getChildren().add(gameManager);
 		
 		ChangeListener<Number> resized = (ov, oldValue, newValue) -> {
 			double scale = Math.min((getWidth() - MARGIN) / gameBounds.getWidth(), (getHeight() - MARGIN) / gameBounds.getHeight());
