@@ -7,12 +7,10 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
 public class SnakePane extends StackPane {
-	private GameManager gameManger;
 	private Bounds gameBounds;
 	private int MARGIN = 32;
 	
 	public SnakePane(GameManager gameManager) {
-		this.gameManger = gameManager;
 		this.gameBounds = gameManager.getLayoutBounds();
 		getChildren().add(gameManager);
 		
