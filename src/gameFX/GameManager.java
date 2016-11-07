@@ -1,7 +1,11 @@
 package gameFX;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 import javafx.scene.Group;
 
@@ -18,6 +22,22 @@ public class GameManager extends Group {
 		
 		snake.init();
 		
+		addRandomFoodToBoard();
+		
+	}
+
+	private void addRandomFoodToBoard() {
+		Cell food = findRandomAvailableFood();
+		food.setState(State.TAIL);
+	}
+
+	private Cell findRandomAvailableFood() {
+		List<Cell> availables = board.getCells().stream()
+				.filter(cell -> cell.getState().equals(State.EMPTY)).collect(Collectors.toList());
+		if(availables.isEmpty())
+			return null;
+		java.util.Collections.shuffle(availables);
+		return availables.get(0);
 	}
 
 	private void addSnakeHead() {

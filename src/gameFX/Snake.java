@@ -2,6 +2,9 @@ package gameFX;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -12,9 +15,10 @@ import javafx.util.Duration;
 
 public class Snake {
 	private Cell head;
-	//private Direction direction = Direction.UP;
 	private GameManager gameManager;
 	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>();
+	
+	private List<Cell> tail = new ArrayList<>();
 	
 	public Snake(GameManager gameManager) {
 		this.gameManager = gameManager;
@@ -35,6 +39,7 @@ public class Snake {
 		KeyFrame frame = new KeyFrame(Duration.millis(500), e -> {
 			Location offset = head.getLacation().offset(snakeDirectionProperty.get());
 			gameManager.getNextCell(offset).ifPresent(next -> {
+				
 				Cell last = head;
 				last.setState(State.EMPTY);
 				setHead(next);
