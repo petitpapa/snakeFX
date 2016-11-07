@@ -5,21 +5,25 @@ package gameFX;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 
 public class Snake {
 	private Cell head;
-	private Direction direction = Direction.UP;
+	//private Direction direction = Direction.UP;
 	private GameManager gameManager;
+	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>();
 	
 	public Snake(GameManager gameManager) {
 		this.gameManager = gameManager;
-		init();
+		snakeDirectionProperty.set(Direction.UP);
 	}
 
 	 void init() {
-		//head.setState(State.HEAD);
-		 move();
+		
+		move();
 		Timeline timeline = new Timeline(move());
 		
 		timeline.setCycleCount(Animation.INDEFINITE);
@@ -29,7 +33,7 @@ public class Snake {
 	 private KeyFrame move() {
 		 
 		KeyFrame frame = new KeyFrame(Duration.millis(500), e -> {
-			Location offset = head.getLacation().offset(direction);
+			Location offset = head.getLacation().offset(snakeDirectionProperty.get());
 			gameManager.getNextCell(offset).ifPresent(next -> {
 				Cell last = head;
 				last.setState(State.EMPTY);

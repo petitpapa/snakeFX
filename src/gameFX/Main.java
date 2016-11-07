@@ -13,11 +13,15 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		root = new SnakePane(new GameManager());
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Snake GameFX");
 		primaryStage.setScene(scene);
 		primaryStage.show();
+	}
+	@Override
+	public void init() throws Exception {
+		root = new SnakePane(new GameManager());
+		root.getGameManager().requestFocus();
 	}
 
 }

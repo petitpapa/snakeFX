@@ -31,4 +31,8 @@ public class GameManager extends Group {
 				.filter(cell -> cell.getLacation().equals(offset))
 				.findAny();
 	}
+
+	public Group getBoard() {
+		return board;
+	}
 }
