@@ -8,5 +8,16 @@ public class GameManager extends Group {
 	public GameManager() {
 		board = new Board();
 		getChildren().add(board);
+		
+		addSnakeHead();
+	}
+
+	private void addSnakeHead() {
+		
+		board.getCells().stream().parallel()
+		.filter(cell -> cell.getLacation().equals(new Location(10, 10)))
+		.findAny().ifPresent(c ->{
+			c.setState(State.HEAD);
+		});
 	}
 }

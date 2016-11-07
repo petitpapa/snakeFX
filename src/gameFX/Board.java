@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 public class Board extends Group {
 	
 	private VBox vGame = new VBox();
+	
 	private List<Cell> cells = new ArrayList<>();
 	
 	private Group gridGroup = new Group();
@@ -72,7 +73,9 @@ public class Board extends Group {
 	private void createGrid() {
 		IntStream.range(0, Config.GRID_SIZE).boxed().forEach(x -> {
 			IntStream.range(0, Config.GRID_SIZE).boxed().forEach(y -> {
-				cells.add(createCell(x, y));
+				Cell cell = createCell(x, y);
+				cell.setLocation(new Location(x, y));
+				cells.add(cell);
 			});
 		});
 		
@@ -95,6 +98,10 @@ public class Board extends Group {
 		Cell cell = new Cell(i, j);
 		cell.setStroke(Color.GREY);
 		return cell;
+	}
+
+	public List<Cell> getCells() {
+		return cells;
 	}
 
 
