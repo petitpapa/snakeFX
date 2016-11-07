@@ -8,6 +8,7 @@ import java.util.List;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,6 +18,7 @@ public class Snake {
 	private Cell head;
 	private GameManager gameManager;
 	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>();
+	public static BooleanProperty snakeEatFood = new SimpleBooleanProperty();
 	
 	private List<Cell> tail = new ArrayList<>();
 	
@@ -41,6 +43,18 @@ public class Snake {
 			gameManager.getNextCell(offset).ifPresent(next -> {
 				
 				Cell last = head;
+				
+				for(int i = 0; i < tail.size(); i++){
+					Cell c = tail.get(i);
+					last.setState(State.TAIL);
+					tail.set(i, last);
+					last = c;
+				}
+				if(next.getState().equals(State.FOOD)){
+					tail.add(last);
+					snakeEatFood.set(true);
+				}
+				snakeEatFood.set(false);
 				last.setState(State.EMPTY);
 				setHead(next);
 			});
