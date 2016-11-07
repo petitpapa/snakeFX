@@ -30,4 +30,7 @@ public class Location {
 	public int hashCode() {
 		return Objects.hash(getX(), getY());
 	}
+	public Location offset(Direction direction) {
+		return new Location(x + direction.getX(), y + direction.getY());
+	}
 }

@@ -7,6 +7,9 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -20,12 +23,14 @@ public class Board extends Group {
 	private VBox vGame = new VBox();
 	
 	private List<Cell> cells = new ArrayList<>();
+	private ObservableList<Cell> observableCells = FXCollections.observableList(cells);
 	
 	private Group gridGroup = new Group();
 	
 	public Board() {
 		createScorePresentation();
 		createGrid();
+		
 	}
 
 
