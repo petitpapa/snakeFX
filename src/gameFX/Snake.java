@@ -15,33 +15,44 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 
 public class Snake {
+	
+
 	private Duration FPS = Duration.millis(1000);
 	private Cell head;
 	private GameManager gameManager;
 	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>();
 	public static BooleanProperty snakeEatFood = new SimpleBooleanProperty();
 	private  IntegerProperty pointsProperty = new SimpleIntegerProperty(0);
-	private ObjectProperty<SpeedLevel> speedProperty = new SimpleObjectProperty<>(SpeedLevel.SLOW);
+	private ObjectProperty<SpeedLevel> speedProperty = new SimpleObjectProperty<>(SpeedLevel.MEDIUM);
 
 	private List<Cell> tail = new ArrayList<>();
+	private Timeline timeline;
 
 	public Snake(GameManager gameManager) {
 		this.gameManager = gameManager;
 		snakeDirectionProperty.set(Direction.UP);
+		
+		speedProperty.addListener((obs, old, newValue) ->{
+				if(newValue.ordinal() <= 3 && !newValue.equals(old)){
+					timeline.stop();
+					
+					timeline.getKeyFrames().add(move());
+					timeline.play();
+			}
+		});
 	}
 
 	void init() {
 
-		Timeline timeline = new Timeline(move());
+		timeline = new Timeline(move());
 
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.play();
 	}
 
 	private KeyFrame move() {
-		int speed = speedProperty.get().getSpeedLevel();
-		FPS = FPS.divide(speed) ;
-		KeyFrame frame = new KeyFrame(FPS , e -> {
+		//int speed = speedProperty.get().getSpeedLevel();
+		KeyFrame frame = new KeyFrame( FPS.divide(speedProperty.get().getSpeedLevel()), e -> {
 			Location offset = head.getLacation()
 					.offset(snakeDirectionProperty.get());
 			gameManager.getNextCell(offset).ifPresent(next -> {
@@ -70,6 +81,11 @@ public class Snake {
 
 	private void addPoints() {
 		pointsProperty.set(pointsProperty.get() + 1);
+		if(pointsProperty.get() % 8 == 0){
+			int index = speedProperty.get().ordinal();
+			if(index < 3)
+				speedProperty.setValue(SpeedLevel.values()[index + 1]);
+		}
 	}
 
 	public IntegerProperty getPoints(){
