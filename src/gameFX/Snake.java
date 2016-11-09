@@ -15,11 +15,13 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 
 public class Snake {
+	private Duration FPS = Duration.millis(1000);
 	private Cell head;
 	private GameManager gameManager;
 	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>();
 	public static BooleanProperty snakeEatFood = new SimpleBooleanProperty();
 	private  IntegerProperty pointsProperty = new SimpleIntegerProperty(0);
+	private ObjectProperty<SpeedLevel> speedProperty = new SimpleObjectProperty<>(SpeedLevel.SLOW);
 
 	private List<Cell> tail = new ArrayList<>();
 
@@ -30,7 +32,6 @@ public class Snake {
 
 	void init() {
 
-		move();
 		Timeline timeline = new Timeline(move());
 
 		timeline.setCycleCount(Animation.INDEFINITE);
@@ -38,8 +39,9 @@ public class Snake {
 	}
 
 	private KeyFrame move() {
-
-		KeyFrame frame = new KeyFrame(Duration.millis(500), e -> {
+		int speed = speedProperty.get().getSpeedLevel();
+		FPS = FPS.divide(speed) ;
+		KeyFrame frame = new KeyFrame(FPS , e -> {
 			Location offset = head.getLacation()
 					.offset(snakeDirectionProperty.get());
 			gameManager.getNextCell(offset).ifPresent(next -> {
