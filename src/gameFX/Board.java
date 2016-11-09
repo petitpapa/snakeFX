@@ -26,6 +26,8 @@ public class Board extends Group {
 	private ObservableList<Cell> observableCells = FXCollections.observableList(cells);
 	
 	private Group gridGroup = new Group();
+
+	private Label lblScorePoint;
 	
 	public Board() {
 		createScorePresentation();
@@ -43,7 +45,7 @@ public class Board extends Group {
 		hTop.setPrefSize(Config.GRID_WIDTH, Config.TOP_HEIGHT);
 		
 		Label lblScore = new Label("SCORE");
-		Label lblScorePoint = new Label("0");
+		lblScorePoint = new Label("0");
 		
 		VBox vScore = new VBox(-3);
 		vScore.getChildren().add(lblScore);
@@ -109,6 +111,8 @@ public class Board extends Group {
 		return cells;
 	}
 
-
+	public Label getScorePoint() {
+		return lblScorePoint;
+	}
 	
 }

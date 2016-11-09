@@ -23,8 +23,10 @@ public class GameManager extends Group {
 
 		addRandomFoodToBoard();
 		Snake.snakeEatFood.addListener((ov, oldValue, newValue) ->{
-			if(newValue)
+			if(newValue){
 				addRandomFoodToBoard();
+				board.getScorePoint().textProperty().bind(snake.getPoints().asString());
+			}
 		});
 
 	}
