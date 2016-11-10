@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.scene.Group;
+import javafx.scene.layout.VBox;
 
 public class GameManager extends Group {
 	private final Board board;
@@ -62,5 +63,37 @@ public class GameManager extends Group {
 
 	public Group getBoard() {
 		return board;
+	}
+
+	public void startGame() {
+	}
+
+	public Object pauseGame() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object saveSession() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object restoreGame() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object tryAgain() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object quitGame() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setToolBar(VBox toolbar) {
+		board.setToolBar(toolbar);
 	}
 }

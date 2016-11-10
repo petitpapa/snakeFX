@@ -37,7 +37,6 @@ public class Snake {
 		speedProperty.addListener((obs, old, newValue) -> {
 			if (newValue.ordinal() <= 3 && !newValue.equals(old)) {
 				timeline.stop();
-
 				timeline.getKeyFrames().add(move());
 				timeline.play();
 			}
