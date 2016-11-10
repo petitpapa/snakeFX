@@ -7,7 +7,8 @@ public enum Direction {
 	
 	private final int x;
 	private final int y;
-	private Direction(int x, int y) {
+	
+	private Direction(int x, int y ) {
 		this.x = x;
 		this.y = y;
 	}
@@ -20,4 +21,5 @@ public enum Direction {
 	public static Direction valueFor(KeyCode keyCode) {
 		return valueOf(keyCode.name());
 	}
+	
 }

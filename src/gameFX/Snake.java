@@ -15,32 +15,35 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 
 public class Snake {
-	
 
 	private Duration FPS = Duration.millis(1000);
 	private Cell head;
 	private GameManager gameManager;
-	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>();
+	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>(Direction.UP);
 	public static BooleanProperty snakeEatFood = new SimpleBooleanProperty();
-	private  IntegerProperty pointsProperty = new SimpleIntegerProperty(0);
-	private ObjectProperty<SpeedLevel> speedProperty = new SimpleObjectProperty<>(SpeedLevel.MEDIUM);
+	private IntegerProperty pointsProperty = new SimpleIntegerProperty(0);
+	private ObjectProperty<SpeedLevel> speedProperty = new SimpleObjectProperty<>(
+			SpeedLevel.SLOW);
+	
+	private Direction previoustDirection = snakeDirectionProperty.get();
 
 	private List<Cell> tail = new ArrayList<>();
 	private Timeline timeline;
 
 	public Snake(GameManager gameManager) {
 		this.gameManager = gameManager;
-		snakeDirectionProperty.set(Direction.UP);
 		
-		speedProperty.addListener((obs, old, newValue) ->{
-				if(newValue.ordinal() <= 3 && !newValue.equals(old)){
-					timeline.stop();
-					
-					timeline.getKeyFrames().add(move());
-					timeline.play();
+
+		speedProperty.addListener((obs, old, newValue) -> {
+			if (newValue.ordinal() <= 3 && !newValue.equals(old)) {
+				timeline.stop();
+
+				timeline.getKeyFrames().add(move());
+				timeline.play();
 			}
 		});
 	}
+
 
 	void init() {
 
@@ -51,44 +54,60 @@ public class Snake {
 	}
 
 	private KeyFrame move() {
-		//int speed = speedProperty.get().getSpeedLevel();
-		KeyFrame frame = new KeyFrame( FPS.divide(speedProperty.get().getSpeedLevel()), e -> {
-			Location offset = head.getLacation()
-					.offset(snakeDirectionProperty.get());
-			gameManager.getNextCell(offset).ifPresent(next -> {
+		KeyFrame frame = new KeyFrame(
+				FPS.divide(speedProperty.get().getSpeedLevel()), e -> {
+					Direction nextDirection = snakeDirectionProperty.get();
+					if(hasOppositeUp(nextDirection) || hasOppositeDown(nextDirection))
+						nextDirection = previoustDirection;
+					
+					Location offset = head.getLacation()
+							.offset(nextDirection);
+					gameManager.getNextCell(offset).ifPresent(next -> {
 
-				Cell last = head;
+						Cell last = head;
 
-				for (int i = 0; i < tail.size(); i++) {
-					Cell c = tail.get(i);
-					last.setState(State.TAIL);
-					tail.set(i, last);
-					last = c;
-				}
-				if (next.getState().equals(State.FOOD)) {
-					tail.add(last);
-					snakeEatFood.set(true);
-					addPoints();
-				}
-				snakeEatFood.set(false);
-				last.setState(State.EMPTY);
-				setHead(next);
-			});
-
-		});
+						for (int i = 0; i < tail.size(); i++) {
+							Cell c = tail.get(i);
+							last.setState(State.TAIL);
+							tail.set(i, last);
+							last = c;
+						}
+						if (next.getState().equals(State.FOOD)) {
+							tail.add(last);
+							snakeEatFood.set(true);
+							addPoints();
+						}
+						snakeEatFood.set(false);
+						last.setState(State.EMPTY);
+						setHead(next);
+					});
+					previoustDirection = nextDirection;
+				});
 		return frame;
+	}
+
+
+	private boolean hasOppositeDown(Direction nextDirection) {
+		return nextDirection.equals(Direction.LEFT) && previoustDirection.equals(Direction.RIGHT) || 
+				nextDirection.equals(Direction.RIGHT) && previoustDirection.equals(Direction.LEFT);
+	}
+
+
+	private boolean hasOppositeUp(Direction nextDirection) {
+		return nextDirection.equals(Direction.UP) && previoustDirection.equals(Direction.DOWN) || 
+				nextDirection.equals(Direction.DOWN) && previoustDirection.equals(Direction.UP);
 	}
 
 	private void addPoints() {
 		pointsProperty.set(pointsProperty.get() + 1);
-		if(pointsProperty.get() % 8 == 0){
+		if (pointsProperty.get() % 8 == 0) {
 			int index = speedProperty.get().ordinal();
-			if(index < 3)
+			if (index < 3)
 				speedProperty.setValue(SpeedLevel.values()[index + 1]);
 		}
 	}
 
-	public IntegerProperty getPoints(){
+	public IntegerProperty getPoints() {
 		return pointsProperty;
 	}
 	public void setHead(Cell next) {
