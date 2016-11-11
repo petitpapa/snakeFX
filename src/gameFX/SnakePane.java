@@ -23,6 +23,7 @@ public class SnakePane extends StackPane {
 		this.gameBounds = gameManager.getLayoutBounds();
 		getChildren().add(gameManager);
 		gameManager.setToolBar(createToolBar());
+		getStyleClass().add("game-root");
 
 		ChangeListener<Number> resized = (ov, oldValue, newValue) -> {
 			double scale = Math.min(

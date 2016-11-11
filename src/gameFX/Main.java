@@ -15,6 +15,7 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Snake GameFX");
+		scene.getStylesheets().add(Main.class.getResource("game.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}

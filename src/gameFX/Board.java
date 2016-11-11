@@ -51,17 +51,16 @@ public class Board extends Group {
 
 
 	private void initGameProperties() {
-		overlay.setMinSize(Config.GRID_WIDTH, Config.GRID_WIDTH);
+		overlay.setMinSize(Config.GRID_WIDTH + Config.GRID_WIDTH / 2, Config.GRID_WIDTH);
 		overlay.setTranslateY(Config.TOP_HEIGHT + Config.GAP_HEIGHT);
-		overlay.setTranslateX(Config.GRID_WIDTH / 2);
+		
 		overlay.setAlignment(Pos.CENTER);
 		overlay.getChildren().add(txtOverlay);
 		
-		buttonOverlay.setMinSize(Config.GRID_WIDTH, Config.GRID_WIDTH / 2d);
+		buttonOverlay.setMinSize(Config.GRID_WIDTH + Config.GRID_WIDTH / 2, Config.GRID_WIDTH / 2d);
 		buttonOverlay.setTranslateY(Config.TOP_HEIGHT + Config.GAP_HEIGHT + Config.GRID_WIDTH / 2d);
-		buttonOverlay.setTranslateX(Config.GRID_WIDTH / 2);
 		buttonOverlay.setAlignment(Pos.CENTER);
-		
+		btnTryAgain.getStyleClass().add("game-button");
 		gameOverProperty.addListener(new Overlay("Game Over!", btnTryAgain));
 		
 		layerOnProperty.addListener((ov, old, newValue) -> {
@@ -97,16 +96,22 @@ public class Board extends Group {
 		hTop.setPrefSize(Config.GRID_WIDTH, Config.TOP_HEIGHT);
 		
 		Label lblScore = new Label("SCORE");
+		lblScore.getStyleClass().addAll("game-label", "game-lblTitle");
 		lblScorePoint = new Label("0");
+		lblScorePoint.getStyleClass().add("game-score");
 		
 		VBox vScore = new VBox(-3);
 		vScore.getChildren().add(lblScore);
+		vScore.getStyleClass().add("game-vbox");
 		vScore.getChildren().add(lblScorePoint);
 		
 		Label lblBest = new Label("BEST");
+		lblBest.getStyleClass().addAll("game-label", "game-lblTitle");
 		Label lblBestPoint = new Label("0");
+		lblBestPoint.getStyleClass().add("game-score");
 		
 		VBox vRecord = new VBox(-3);
+		vRecord.getStyleClass().add("game-vbox");
 		vRecord.getChildren().add(lblBest);
 		vRecord.getChildren().add(lblBestPoint);
 		
@@ -163,7 +168,6 @@ public class Board extends Group {
 
 	private Cell createCell(int i, int j) {
 		Cell cell = new Cell(i, j);
-		cell.setStroke(Color.GREY);
 		return cell;
 	}
 
@@ -200,6 +204,7 @@ public class Board extends Group {
 		public void changed(ObservableValue<? extends Boolean> arg0,
 				Boolean old, Boolean newValue) {
 			if(newValue){
+				overlay.getStyleClass().setAll("game-overlay","game-overlay-over");
 				txtOverlay.getChildren().add(new Label(message));
 				buttonOverlay.getChildren().add(btn);
 				getChildren().addAll(overlay, buttonOverlay);
