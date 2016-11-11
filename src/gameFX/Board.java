@@ -4,8 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import javax.net.ssl.SNIHostName;
+
+import gameFX.Board.Overlay;
+import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -15,9 +24,18 @@ import javafx.scene.shape.Rectangle;
 
 public class Board extends Group {
 	
+
+
 	private VBox vGame = new VBox();
 	private HBox vPanel = new HBox();
 	private VBox vPanelPresentation;
+	private HBox overlay = new HBox();
+	private HBox buttonOverlay = new HBox();
+	private VBox txtOverlay = new VBox();
+	private Button btnTryAgain = new Button("Try Again");
+	
+	private BooleanProperty layerOnProperty = new SimpleBooleanProperty(false);
+	private BooleanProperty gameOverProperty = new SimpleBooleanProperty(false);
 	
 	private List<Cell> cells = new ArrayList<>();
 	
@@ -28,6 +46,32 @@ public class Board extends Group {
 	public Board() {
 		createScorePresentation();
 		createGrid();
+		initGameProperties();
+	}
+
+
+	private void initGameProperties() {
+		overlay.setMinSize(Config.GRID_WIDTH, Config.GRID_WIDTH);
+		overlay.setTranslateY(Config.TOP_HEIGHT + Config.GAP_HEIGHT);
+		overlay.setTranslateX(Config.GRID_WIDTH / 2);
+		overlay.setAlignment(Pos.CENTER);
+		overlay.getChildren().add(txtOverlay);
+		
+		buttonOverlay.setMinSize(Config.GRID_WIDTH, Config.GRID_WIDTH / 2d);
+		buttonOverlay.setTranslateY(Config.TOP_HEIGHT + Config.GAP_HEIGHT + Config.GRID_WIDTH / 2d);
+		buttonOverlay.setTranslateX(Config.GRID_WIDTH / 2);
+		buttonOverlay.setAlignment(Pos.CENTER);
+		
+		gameOverProperty.addListener(new Overlay("Game Over!", btnTryAgain));
+		
+		layerOnProperty.addListener((ov, old, newValue) -> {
+			if(newValue){
+				 buttonOverlay.getChildren().get(0).requestFocus();
+			}else{
+				getChildren().removeAll(overlay, buttonOverlay);
+				getParent().requestFocus();
+			}
+		});
 		
 	}
 
@@ -110,8 +154,6 @@ public class Board extends Group {
 	    hBottom.setPrefSize(Config.GRID_WIDTH, Config.GRID_WIDTH);
 	    hBottom.setMaxSize(Config.GRID_WIDTH, Config.GRID_WIDTH);
 		hBottom.getChildren().add(gridGroup);
-		Rectangle rect = new Rectangle(Config.GRID_WIDTH, Config.GRID_WIDTH);
-		
 		
 		vGame.getChildren().add(hBottom);
 		
@@ -137,5 +179,34 @@ public class Board extends Group {
 	public void setToolBar(VBox toolbar) {
 		vPanelPresentation.getChildren().add(toolbar);
 	}
+
+
+	public void setGameOver(boolean value) {
+		if(!gameOverProperty.get())
+			gameOverProperty.set(value);
+	}
 	
+	public class Overlay implements ChangeListener<Boolean> {
+		
+		private String message;
+		private Button btn;
+
+		public Overlay(String msg, Button btn) {
+			this.message = msg;
+			this.btn = btn;
+		}
+
+		@Override
+		public void changed(ObservableValue<? extends Boolean> arg0,
+				Boolean old, Boolean newValue) {
+			if(newValue){
+				txtOverlay.getChildren().add(new Label(message));
+				buttonOverlay.getChildren().add(btn);
+				getChildren().addAll(overlay, buttonOverlay);
+				if(!layerOnProperty.get())
+					layerOnProperty.set(true);
+			}
+		}
+		
+	}
 }

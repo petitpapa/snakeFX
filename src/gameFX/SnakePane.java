@@ -11,6 +11,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 public class SnakePane extends StackPane {
 	private Bounds gameBounds;
@@ -52,8 +53,7 @@ public class SnakePane extends StackPane {
 	}
 
 	private Button createButtonItem(String msg, EventHandler<ActionEvent> t) {
-		 Button btn = new Button();
-		 btn.setText(msg);
+		 Button btn = new Button(msg);
 		 btn.setOnAction(t);
 		 btn.setMaxWidth(120);
 		return btn;

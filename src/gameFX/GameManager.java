@@ -66,6 +66,7 @@ public class GameManager extends Group {
 	}
 
 	public void startGame() {
+		snake.startGame();
 	}
 
 	public Object pauseGame() {
@@ -95,5 +96,10 @@ public class GameManager extends Group {
 
 	public void setToolBar(VBox toolbar) {
 		board.setToolBar(toolbar);
+	}
+
+	public void setGameOver(boolean value) {
+		board.setGameOver(value);
+		snake.stopTimer();
 	}
 }

@@ -19,12 +19,13 @@ public class Snake {
 	private Duration FPS = Duration.millis(1000);
 	private Cell head;
 	private GameManager gameManager;
-	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>(Direction.UP);
+	public static ObjectProperty<Direction> snakeDirectionProperty = new SimpleObjectProperty<Direction>(
+			Direction.UP);
 	public static BooleanProperty snakeEatFood = new SimpleBooleanProperty();
 	private IntegerProperty pointsProperty = new SimpleIntegerProperty(0);
 	private ObjectProperty<SpeedLevel> speedProperty = new SimpleObjectProperty<>(
 			SpeedLevel.SLOW);
-	
+
 	private Direction previoustDirection = snakeDirectionProperty.get();
 
 	private List<Cell> tail = new ArrayList<>();
@@ -32,7 +33,6 @@ public class Snake {
 
 	public Snake(GameManager gameManager) {
 		this.gameManager = gameManager;
-		
 
 		speedProperty.addListener((obs, old, newValue) -> {
 			if (newValue.ordinal() <= 3 && !newValue.equals(old)) {
@@ -43,25 +43,26 @@ public class Snake {
 		});
 	}
 
-
 	void init() {
 
 		timeline = new Timeline(move());
 
 		timeline.setCycleCount(Animation.INDEFINITE);
-		timeline.play();
 	}
 
 	private KeyFrame move() {
 		KeyFrame frame = new KeyFrame(
 				FPS.divide(speedProperty.get().getSpeedLevel()), e -> {
 					Direction nextDirection = snakeDirectionProperty.get();
-					if(hasOppositeUp(nextDirection) || hasOppositeDown(nextDirection))
+					if (hasOppositeUp(nextDirection)
+							|| hasOppositeDown(nextDirection))
 						nextDirection = previoustDirection;
+
+					Location offset = head.getLacation().offset(nextDirection);
 					
-					Location offset = head.getLacation()
-							.offset(nextDirection);
 					gameManager.getNextCell(offset).ifPresent(next -> {
+						if(next.getState().equals(State.TAIL))
+							gameManager.setGameOver(true);
 
 						Cell last = head;
 
@@ -85,16 +86,18 @@ public class Snake {
 		return frame;
 	}
 
-
 	private boolean hasOppositeDown(Direction nextDirection) {
-		return nextDirection.equals(Direction.LEFT) && previoustDirection.equals(Direction.RIGHT) || 
-				nextDirection.equals(Direction.RIGHT) && previoustDirection.equals(Direction.LEFT);
+		return nextDirection.equals(Direction.LEFT)
+				&& previoustDirection.equals(Direction.RIGHT)
+				|| nextDirection.equals(Direction.RIGHT)
+						&& previoustDirection.equals(Direction.LEFT);
 	}
 
-
 	private boolean hasOppositeUp(Direction nextDirection) {
-		return nextDirection.equals(Direction.UP) && previoustDirection.equals(Direction.DOWN) || 
-				nextDirection.equals(Direction.DOWN) && previoustDirection.equals(Direction.UP);
+		return nextDirection.equals(Direction.UP)
+				&& previoustDirection.equals(Direction.DOWN)
+				|| nextDirection.equals(Direction.DOWN)
+						&& previoustDirection.equals(Direction.UP);
 	}
 
 	private void addPoints() {
@@ -120,6 +123,14 @@ public class Snake {
 
 	public Cell getHead() {
 		return head;
+	}
+
+	public void startGame() {
+		timeline.play();
+	}
+
+	public void stopTimer() {
+		timeline.stop();
 	}
 
 }
